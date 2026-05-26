@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /node_modules/
+
+Sitemap: https://vepai.uz/sitemap.xml
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
