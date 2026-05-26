@@ -11,7 +11,9 @@ import {
   Camera as Instagram, 
   ArrowRight,
   Menu,
-  X
+  X,
+  Phone,
+  Mail
 } from 'lucide-react';
 import { translations, Language } from './lib/translations';
 
@@ -19,6 +21,7 @@ export default function App() {
   const [lang, setLang] = useState<Language>('uz');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const t = translations[lang];
 
@@ -42,6 +45,26 @@ export default function App() {
     { name: t.hero.btn2, href: '#about' },
   ];
 
+  const handleTelegramClick = () => {
+    window.open('https://t.me/VepAi_bot', '_blank');
+  };
+
+  const handleInstagramClick = () => {
+    window.open('https://instagram.com/sirojiddin_o782', '_blank');
+  };
+
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const href = e.currentTarget.getAttribute('href');
+    if (href?.startsWith('#')) {
+      e.preventDefault();
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        setIsMenuOpen(false);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen font-sans bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
       {/* Navbar */}
@@ -52,15 +75,16 @@ export default function App() {
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <a href="#" className="font-display text-2xl tracking-tighter hover:opacity-80 transition-opacity">
+            <a href="/" className="font-display text-2xl tracking-tighter hover:opacity-80 transition-opacity">
               VepAi
             </a>
             <div className="hidden md:flex items-center gap-6">
               {navLinks.map((link) => (
                 <a 
                   key={link.name} 
-                  href={link.href} 
-                  className="text-sm font-medium hover:opacity-60 transition-opacity"
+                  href={link.href}
+                  onClick={handleSmoothScroll}
+                  className="text-sm font-medium hover:opacity-60 transition-opacity cursor-pointer"
                 >
                   {link.name}
                 </a>
@@ -84,18 +108,17 @@ export default function App() {
               ))}
             </div>
             
-            <a 
-              href="https://t.me/VepAi_bot" 
-              target="_blank"
-              rel="noopener noreferrer"
+            <button 
+              onClick={handleTelegramClick}
               className="hidden sm:flex items-center gap-2 bg-primary text-primary-foreground px-6 py-2 rounded-full text-sm font-bold hover:scale-105 active:scale-95 transition-all shadow-lg"
             >
               {t.nav.contact}
-            </a>
+            </button>
 
             <button 
               className="md:hidden p-2 hover:bg-foreground/5 rounded-full"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -116,20 +139,19 @@ export default function App() {
               {navLinks.map((link) => (
                 <a 
                   key={link.name} 
-                  href={link.href} 
-                  className="text-3xl font-display tracking-tight"
-                  onClick={() => setIsMenuOpen(false)}
+                  href={link.href}
+                  onClick={handleSmoothScroll}
+                  className="text-3xl font-display tracking-tight cursor-pointer"
                 >
                   {link.name}
                 </a>
               ))}
-              <a 
-                href="https://t.me/VepAi_bot" 
+              <button 
+                onClick={handleTelegramClick}
                 className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-xl font-bold"
-                onClick={() => setIsMenuOpen(false)}
               >
                 {t.nav.contact}
-              </a>
+              </button>
             </div>
           </motion.div>
         )}
@@ -154,14 +176,16 @@ export default function App() {
               </p>
               <div className="flex flex-wrap gap-4">
                 <a 
-                  href="#services" 
-                  className="bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold hover:scale-105 active:scale-95 transition-all shadow-xl"
+                  href="#services"
+                  onClick={handleSmoothScroll}
+                  className="bg-primary text-primary-foreground px-8 py-4 rounded-full font-bold hover:scale-105 active:scale-95 transition-all shadow-xl cursor-pointer"
                 >
                   {t.hero.btn1}
                 </a>
                 <a 
-                  href="#about" 
-                  className="border-2 border-primary text-primary px-8 py-4 rounded-full font-bold hover:bg-primary/5 transition-all"
+                  href="#about"
+                  onClick={handleSmoothScroll}
+                  className="border-2 border-primary text-primary px-8 py-4 rounded-full font-bold hover:bg-primary/5 transition-all cursor-pointer"
                 >
                   {t.hero.btn2}
                 </a>
@@ -253,21 +277,23 @@ export default function App() {
                 <p className="text-xl md:text-2xl font-light opacity-80 mb-12 leading-relaxed max-w-xl">
                   {t.about.bio}
                 </p>
-                <div className="flex gap-6">
-                  <a 
-                    href="https://t.me/VepAi_bot" 
+                <div className="flex gap-6 flex-wrap">
+                  <button 
+                    onClick={handleTelegramClick}
                     className="p-4 bg-primary text-primary-foreground rounded-2xl hover:scale-110 transition-transform shadow-xl"
                     title="Telegram"
+                    aria-label="Contact on Telegram"
                   >
                     <Send size={24} />
-                  </a>
-                  <a 
-                    href="https://instagram.com/sirojiddin_o782" 
+                  </button>
+                  <button 
+                    onClick={handleInstagramClick}
                     className="p-4 bg-primary text-primary-foreground rounded-2xl hover:scale-110 transition-transform shadow-xl"
                     title="Instagram"
+                    aria-label="Follow on Instagram"
                   >
                     <Instagram size={24} />
-                  </a>
+                  </button>
                 </div>
               </motion.div>
 
@@ -308,15 +334,13 @@ export default function App() {
               <h2 className="font-display text-4xl md:text-7xl mb-12 tracking-tight">
                 {t.cta.title}
               </h2>
-              <a 
-                href="https://t.me/VepAi_bot" 
-                target="_blank"
-                rel="noopener noreferrer"
+              <button 
+                onClick={handleTelegramClick}
                 className="inline-flex items-center gap-3 bg-primary-foreground text-primary px-10 py-5 rounded-full text-lg font-bold hover:scale-105 active:scale-95 transition-all shadow-xl"
               >
                 <Send size={24} />
                 {t.cta.button}
-              </a>
+              </button>
             </motion.div>
           </div>
           <div className="absolute top-0 left-0 w-full h-1/2 bg-foreground" />
@@ -327,15 +351,27 @@ export default function App() {
       {/* Footer */}
       <footer className="py-12 bg-background border-t border-border">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
-          <a href="#" className="font-display text-2xl tracking-tighter">
+          <a href="/" className="font-display text-2xl tracking-tighter">
             VepAi
           </a>
           <p className="text-sm opacity-60">
             © {new Date().getFullYear()} {t.about.name}. {t.footer.copyright}
           </p>
           <div className="flex gap-6">
-            <a href="https://t.me/VepAi_bot" className="hover:text-primary transition-colors"><Send size={20} /></a>
-            <a href="https://instagram.com/sirojiddin_o782" className="hover:text-primary transition-colors"><Instagram size={20} /></a>
+            <button 
+              onClick={handleTelegramClick}
+              className="hover:text-primary transition-colors"
+              aria-label="Telegram"
+            >
+              <Send size={20} />
+            </button>
+            <button 
+              onClick={handleInstagramClick}
+              className="hover:text-primary transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram size={20} />
+            </button>
           </div>
         </div>
       </footer>
